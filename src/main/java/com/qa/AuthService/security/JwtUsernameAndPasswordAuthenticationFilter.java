@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qa.Config.security.JwtConfig;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
