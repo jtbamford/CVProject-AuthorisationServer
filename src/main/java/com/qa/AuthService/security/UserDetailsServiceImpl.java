@@ -1,9 +1,16 @@
 package com.qa.AuthService.security;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -11,26 +18,56 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestTemplate;
+
+import com.qa.AuthService.constants.Constants;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+	
+	public void UserDetailsServiceImpl() {
+	};
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Autowired
+	DataSource dataSource;
+	    
+//    @Autowired
+//    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+//      auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(encoder)
+//     .usersByUsernameQuery("select username,password, enabled from users where username=?")
+//     .authoritiesByUsernameQuery("select username, role from users where username=?");
+//    } 
+	
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@GetMapping
+	public List<Users> getAllUsers() {
+
+		UsersList response= restTemplate.getForObject(Constants.HOST+Constants.PORT+Constants.BASE+Constants.GET_ALL_URL, UsersList.class);
+		List<Users> users = response.getAllUsers();
+		//ResponseEntity<UsersList> users = restTemplate.getForEntity(Constants.HOST+Constants.PORT+Constants.BASE+Constants.GET_ALL_URL, UsersList.class);
+		return users;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		// hard coding the users. All passwords must be encoded.
-		final List<Users> users = Arrays.asList(
-			new Users(false, "omar", encoder.encode("12345"), "TRAINEE"),
-				new Users(false, "trainer", encoder.encode("12346"), "TRAINER"),
-				new Users(false, "manager", encoder.encode("12347"), "TRAINING_MANAGER")
-		);
+	//	final List<Users> users = Arrays.asList(
+	//		new Users(false, "omar", encoder.encode("12345"), "TRAINEE"),
+	//		new Users(false, "trainer", encoder.encode("12346"), "TRAINER"),
+	//		new Users(false, "manager", encoder.encode("12347"), "TRAINING_MANAGER")
+	//	);
 		
 
-		for(Users Users: users) {
+		for(Users Users: getAllUsers()) {
 			if(Users.getUsername().equals(username)) {
 				
 				// Remember that Spring needs roles to be in this format: "ROLE_" + userRole (i.e. "ROLE_ADMIN")
@@ -53,6 +90,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		private Boolean enabled;
 	    	private String username, password;
 	    	private String role;
+	    	
+	    	public Users( ) {
+	    		
+	    	}
 	    
 		public Users(Boolean enabled, String username, String password, String role) {
 	    		this.enabled = enabled;
@@ -97,5 +138,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 			
 	}
+	private static class UsersList {
+		private List<Users> allUsers;
+		
+	public List<Users> getAllUsers() {
+			return allUsers;
+		}
+
+		public void setAllUsers(List<Users> allUsers) {
+			this.allUsers = allUsers;
+		}
+		
+		public void UsersList() {			
+		}
+
+	public UsersList() {
+		allUsers = new ArrayList<>(); 
+	}
 	
+		
+	}
+
 }
+	
+
