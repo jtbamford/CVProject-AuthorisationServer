@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 
 import com.qa.AuthService.constants.Constants;
+import com.qa.AuthService.repository.domain.Users;
+import com.qa.AuthService.repository.domain.UsersList;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -86,78 +88,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	// A (temporary) class represent the user saved in the database.
-	private static class Users {
-		private Boolean enabled;
-	    	private String username, password;
-	    	private String role;
-	    	
-	    	public Users( ) {
-	    		
-	    	}
-	    
-		public Users(Boolean enabled, String username, String password, String role) {
-	    		this.enabled = enabled;
-	    		this.username = username;
-	    		this.password = password;
-	    		this.role = role;
-	    	}
 
-		
-		public Boolean getEnabled() {
-			return enabled;
-		}
-
-		public void setEnabled(Boolean enabled) {
-			this.enabled = enabled;
-		}
-
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-
-		public String getRole() {
-			return role;
-		}
-
-		public void setRole(String role) {
-			this.role = role;
-		}
-
-			
-	}
-	private static class UsersList {
-		private List<Users> allUsers;
-		
-	public List<Users> getAllUsers() {
-			return allUsers;
-		}
-
-		public void setAllUsers(List<Users> allUsers) {
-			this.allUsers = allUsers;
-		}
-		
-		public void UsersList() {			
-		}
-
-	public UsersList() {
-		allUsers = new ArrayList<>(); 
-	}
-	
-		
-	}
 
 }
 	
